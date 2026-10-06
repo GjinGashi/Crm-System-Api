@@ -34,19 +34,20 @@ class UserController extends Controller
                 })
         );
     }
-public function show(User $user): JsonResponse
-{
-    $user->load('employee.role');
 
-    return response()->json([
-        'id' => $user->id,
-        'first_name' => $user->first_name,
-        'last_name' => $user->last_name,
-        'email' => $user->email,
-        'account_type' => $user->role,
-        'employee' => $user->employee,
-    ]);
-}
+    public function show(User $user): JsonResponse
+    {
+        $user->load('employee.role');
+
+        return response()->json([
+            'id' => $user->id,
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'account_type' => $user->role,
+            'employee' => $user->employee,
+        ]);
+    }
 
     public function store(Request $request): JsonResponse
     {
@@ -92,7 +93,7 @@ public function show(User $user): JsonResponse
             'email' => [
                 'required',
                 'email',
-                'unique:users,email,' . $user->id,
+                'unique:users,email,'.$user->id,
             ],
             'account_type' => ['required', 'in:admin,user'],
             'role_id' => [

@@ -7,13 +7,12 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Laravel\Sanctum\HasApiTokens;
-
 
 /**
  * @property string $id
@@ -21,7 +20,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string $last_name
  * @property string $email
  * @property string $role
- *  * @property string|null $avatar
+ *                        * @property string|null $avatar
  * @property Carbon|null $email_verified_at
  * @property string $password
  * @property string|null $remember_token
@@ -52,12 +51,16 @@ class User extends Authenticatable
     {
         return $this->role === 'admin';
     }
+
+    /** @return HasOne<Employee, $this> */
     public function employee(): HasOne
-{
-    return $this->hasOne(Employee::class);
-}
-public function tasks(): HasMany
-{
-    return $this->hasMany(Task::class);
-}
+    {
+        return $this->hasOne(Employee::class);
+    }
+
+    /** @return HasMany<Task, $this> */
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(Task::class);
+    }
 }

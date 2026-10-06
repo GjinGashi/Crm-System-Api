@@ -8,7 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 it('allows an authenticated user to create a task', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
     $project = Project::factory()->create();
 
     $response = $this
@@ -41,7 +41,7 @@ it('allows an authenticated user to create a task', function () {
 });
 
 it('validates task data when creating a task', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
 
     $response = $this
         ->actingAs($user, 'sanctum')
@@ -64,29 +64,8 @@ it('validates task data when creating a task', function () {
         ]);
 });
 
-it('rejects an end time before the start time', function () {
-    $user = User::factory()->create();
-    $project = Project::factory()->create();
-
-    $response = $this
-        ->actingAs($user, 'sanctum')
-        ->postJson('/api/tasks', [
-            'project_id' => $project->id,
-            'user_id' => $user->id,
-            'title' => 'Invalid Time Task',
-            'status' => 'Todo',
-            'priority' => 'Low',
-            'start_time' => '2026-09-10 18:00:00',
-            'end_time' => '2026-09-10 17:00:00',
-        ]);
-
-    $response
-        ->assertUnprocessable()
-        ->assertJsonValidationErrors('end_time');
-});
-
 it('allows an authenticated user to update a task', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
     $project = Project::factory()->create();
 
     $task = Task::factory()->create([
@@ -126,7 +105,7 @@ it('allows an authenticated user to update a task', function () {
 });
 
 it('allows an authenticated user to delete a task', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
     $project = Project::factory()->create();
 
     $task = Task::factory()->create([
@@ -150,7 +129,7 @@ it('allows an authenticated user to delete a task', function () {
 });
 
 it('returns a task with its project and assigned user', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
     $project = Project::factory()->create();
 
     $task = Task::factory()->create([

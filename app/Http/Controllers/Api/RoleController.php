@@ -41,7 +41,7 @@ class RoleController extends Controller
                 'required',
                 'string',
                 'max:255',
-                'unique:roles,name,' . $role->id,
+                'unique:roles,name,'.$role->id,
             ],
         ]);
 

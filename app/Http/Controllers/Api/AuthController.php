@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -30,6 +30,7 @@ class AuthController extends Controller
             'user' => $user,
         ]);
     }
+
     public function logout(Request $request): JsonResponse
     {
         $request->user()->currentAccessToken()->delete();
@@ -38,6 +39,7 @@ class AuthController extends Controller
             'message' => 'Logged out successfully.',
         ]);
     }
+
     public function forgotPassword(Request $request): JsonResponse
     {
         $request->validate([
@@ -58,6 +60,7 @@ class AuthController extends Controller
             'message' => 'Password reset link sent to your email.',
         ]);
     }
+
     public function resetPassword(Request $request): JsonResponse
     {
         $data = $request->validate([
@@ -93,7 +96,7 @@ class AuthController extends Controller
             'email' => [
                 'required',
                 'email',
-                'unique:users,email,' . $request->user()->id,
+                'unique:users,email,'.$request->user()->id,
             ],
             'current_password' => ['nullable', 'current_password'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
@@ -126,6 +129,7 @@ class AuthController extends Controller
             'user' => $user,
         ]);
     }
+
     public function updateAvatar(Request $request): JsonResponse
     {
         $data = $request->validate([

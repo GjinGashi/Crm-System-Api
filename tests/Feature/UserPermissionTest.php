@@ -65,7 +65,7 @@ it('allows an admin to update a user', function () {
             'first_name' => 'Updated',
             'last_name' => 'User',
             'email' => $user->email,
-            'role' => 'admin',
+            'account_type' => 'admin',
         ]);
 
     $response

@@ -175,7 +175,7 @@ class DatabaseSeeder extends Seeder
                     ],
                     [
                         'user_id' => $taskData['user_id'],
-                        'description' => 'Demo task for the ' . $project->name . ' project.',
+                        'description' => 'Demo task for the '.$project->name.' project.',
                         'status' => 'Todo',
                         'priority' => 'Medium',
                         'start_time' => '2026-09-10 09:00:00',

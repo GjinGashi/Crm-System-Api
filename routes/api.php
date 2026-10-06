@@ -1,18 +1,20 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\UserController;
-use App\Http\Controllers\ClientController;
-use App\Http\Controllers\ProjectController;
-use App\Http\Controllers\TaskController;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\RoleController;
+use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\TaskController;
 use App\Models\Client;
 use App\Models\Project;
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 Route::get('/user', function (Request $request) {
     $user = $request->user()->load('employee.role');
@@ -24,7 +26,7 @@ Route::get('/user', function (Request $request) {
         'email' => $user->email,
         'role' => $user->role,
         'avatar_url' => $user->avatar
-            ? \Illuminate\Support\Facades\Storage::disk('public')->url($user->avatar)
+            ? Storage::disk('public')->url($user->avatar)
             : null,
         'employee' => $user->employee,
     ]);
@@ -33,7 +35,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth:sanctum', 'admin']);
 
 Route::apiResource('users', UserController::class)
-    ->only(['index', 'store', 'update', 'destroy','show'])
+    ->only(['index', 'store', 'update', 'destroy', 'show'])
     ->middleware(['auth:sanctum', 'admin']);
 
 Route::apiResource('roles', RoleController::class)
@@ -74,15 +76,14 @@ Route::patch('/projects/{project}/archive', [ProjectController::class, 'archive'
 Route::patch('/projects/{project}/restore', [ProjectController::class, 'restore'])
     ->middleware(['auth:sanctum', 'admin']);
 Route::get('/task-projects', function () {
-    return \App\Models\Project::query()
+    return Project::query()
         ->select('id', 'name')
         ->whereNull('archived_at')
         ->get();
 })->middleware(['auth:sanctum', 'task.access']);
 
-
 Route::apiResource('tasks', TaskController::class)
-    ->middleware('auth:sanctum', 'task.access');
+    ->middleware(['auth:sanctum', 'task.access']);
 
 Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])
     ->middleware(['auth:sanctum', 'admin']);
@@ -91,7 +92,7 @@ Route::patch('/tasks/{task}/archive', [TaskController::class, 'archive', 'admin'
 
 Route::patch('/tasks/{task}/restore', [TaskController::class, 'restore', 'admin']);
 Route::get('/task-users', function () {
-    return \App\Models\User::query()
+    return User::query()
         ->select('id', 'first_name', 'last_name')
         ->get();
 })->middleware(['auth:sanctum', 'task.access']);

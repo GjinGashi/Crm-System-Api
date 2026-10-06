@@ -8,7 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 it('allows an authenticated user to create a client', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
 
     $response = $this
         ->actingAs($user, 'sanctum')
@@ -40,7 +40,7 @@ it('allows an authenticated user to create a client', function () {
 });
 
 it('validates client data when creating a client', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
 
     $response = $this
         ->actingAs($user, 'sanctum')
@@ -62,7 +62,7 @@ it('validates client data when creating a client', function () {
 });
 
 it('allows an authenticated user to update a client', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
 
     $client = Client::factory()->create([
         'first_name' => 'Old',
@@ -102,7 +102,7 @@ it('allows an authenticated user to update a client', function () {
 });
 
 it('allows an authenticated user to delete a client without related projects', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
 
     $client = Client::factory()->create();
 
@@ -122,7 +122,7 @@ it('allows an authenticated user to delete a client without related projects', f
 });
 
 it('returns the client with its related projects', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
 
     $client = Client::factory()->create();
 
@@ -141,7 +141,7 @@ it('returns the client with its related projects', function () {
 });
 
 it('can filter archived clients through the API', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
 
     $activeClient = Client::factory()->create([
         'archived_at' => null,

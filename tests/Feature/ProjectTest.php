@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 it('allows an authenticated user to create a project', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
     $client = Client::factory()->create();
 
     $response = $this
@@ -39,7 +39,7 @@ it('allows an authenticated user to create a project', function () {
 });
 
 it('validates project data when creating a project', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
 
     $response = $this
         ->actingAs($user, 'sanctum')
@@ -66,7 +66,7 @@ it('validates project data when creating a project', function () {
 });
 
 it('rejects a project due date before its start date', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
     $client = Client::factory()->create();
 
     $response = $this
@@ -86,7 +86,7 @@ it('rejects a project due date before its start date', function () {
 });
 
 it('allows an authenticated user to update a project', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
     $client = Client::factory()->create();
     $project = Project::factory()->create([
         'client_id' => $client->id,
@@ -123,7 +123,7 @@ it('allows an authenticated user to update a project', function () {
 });
 
 it('allows an authenticated user to archive and restore a project', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
     $project = Project::factory()->create([
         'archived_at' => null,
     ]);
@@ -158,7 +158,7 @@ it('allows an authenticated user to archive and restore a project', function () 
 });
 
 it('allows an authenticated user to delete a project', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
     $project = Project::factory()->create();
 
     $response = $this
@@ -177,7 +177,7 @@ it('allows an authenticated user to delete a project', function () {
 });
 
 it('returns a project with its client and related tasks', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
     $client = Client::factory()->create();
 
     $project = Project::factory()->create([
@@ -207,7 +207,7 @@ it('returns a project with its client and related tasks', function () {
 });
 
 it('can filter archived projects through the API', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
 
     $activeProject = Project::factory()->create([
         'archived_at' => null,

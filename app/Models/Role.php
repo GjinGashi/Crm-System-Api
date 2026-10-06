@@ -11,6 +11,7 @@ class Role extends Model
         'name',
     ];
 
+    /** @return HasMany<Employee, $this> */
     public function employees(): HasMany
     {
         return $this->hasMany(Employee::class);

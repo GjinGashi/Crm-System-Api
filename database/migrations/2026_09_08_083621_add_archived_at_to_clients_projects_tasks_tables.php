@@ -19,9 +19,6 @@ return new class extends Migration
             $table->timestamp('archived_at')->nullable();
         });
 
-        Schema::table('tasks', function (Blueprint $table) {
-            $table->timestamp('archived_at')->nullable();
-        });
     }
 
     /**
@@ -37,8 +34,5 @@ return new class extends Migration
             $table->dropColumn('archived_at');
         });
 
-        Schema::table('tasks', function (Blueprint $table) {
-            $table->dropColumn('archived_at');
-        });
     }
 };

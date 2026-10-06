@@ -67,7 +67,7 @@ class EmployeeController extends Controller
             'email' => [
                 'required',
                 'email',
-                'unique:users,email,' . $employee->user_id,
+                'unique:users,email,'.$employee->user_id,
             ],
             'role_id' => ['required', 'exists:roles,id'],
         ]);
@@ -86,6 +86,7 @@ class EmployeeController extends Controller
             $employee->load(['user', 'role'])
         );
     }
+
     public function archive(Employee $employee): JsonResponse
     {
         $employee->update([
