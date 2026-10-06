@@ -20,10 +20,12 @@ class Task extends Model
         'description',
         'status',
         'priority',
-        'start_time',
-        'end_time',
         'due_date',
         'archived_at',
+    ];
+
+    protected $casts = [
+        'due_date' => 'date:Y-m-d',
     ];
 
     /**

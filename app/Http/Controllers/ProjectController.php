@@ -14,7 +14,7 @@ class ProjectController extends Controller
      */
     public function index(Request $request): Collection
     {
-        $query = Project::query();
+        $query = Project::with('client');
 
         if ($request->boolean('archived')) {
             $query->whereNotNull('archived_at');

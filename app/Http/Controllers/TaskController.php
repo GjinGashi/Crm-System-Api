@@ -48,7 +48,7 @@ class TaskController extends Controller
             $query->whereDate('due_date', $request->due_date);
         }
 
-        return $query->get();
+        return $query->with('project', 'user')->get();
     }
 
     public function store(Request $request): Task
@@ -60,8 +60,6 @@ class TaskController extends Controller
             'description' => ['nullable', 'string'],
             'status' => ['required', 'string', 'in:Todo,In Progress,Completed,Canceled'],
             'priority' => ['required', 'string', 'in:Low,Medium,High,Urgent'],
-            'start_time' => ['nullable', 'date'],
-            'end_time' => ['nullable', 'date', 'after_or_equal:start_time'],
             'due_date' => ['nullable', 'date'],
         ]);
         $task = Task::create($data);
@@ -83,8 +81,6 @@ class TaskController extends Controller
             'description' => ['nullable', 'string'],
             'status' => ['required', 'string', 'in:Todo,In Progress,Completed,Canceled'],
             'priority' => ['required', 'string', 'in:Low,Medium,High,Urgent'],
-            'start_time' => ['nullable', 'date'],
-            'end_time' => ['nullable', 'date', 'after_or_equal:start_time'],
             'due_date' => ['nullable', 'date'],
         ]);
         $task->update($data);

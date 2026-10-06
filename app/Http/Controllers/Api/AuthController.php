@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Password;
 
 class AuthController extends Controller
 {
@@ -28,6 +30,60 @@ class AuthController extends Controller
             'user' => $user,
         ]);
     }
+    public function logout(Request $request): JsonResponse
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'message' => 'Logged out successfully.',
+        ]);
+    }
+    public function forgotPassword(Request $request): JsonResponse
+    {
+        $request->validate([
+            'email' => ['required', 'email'],
+        ]);
+
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        if ($status !== Password::RESET_LINK_SENT) {
+            return response()->json([
+                'message' => __($status),
+            ], 422);
+        }
+
+        return response()->json([
+            'message' => 'Password reset link sent to your email.',
+        ]);
+    }
+    public function resetPassword(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'email' => ['required', 'email'],
+            'token' => ['required', 'string'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        $status = Password::reset(
+            $data,
+            function ($user, $password) {
+                $user->password = $password;
+                $user->save();
+            },
+        );
+
+        if ($status !== Password::PASSWORD_RESET) {
+            return response()->json([
+                'message' => __($status),
+            ], 422);
+        }
+
+        return response()->json([
+            'message' => 'Password reset successfully.',
+        ]);
+    }
 
     public function updateProfile(Request $request): JsonResponse
     {
@@ -37,7 +93,7 @@ class AuthController extends Controller
             'email' => [
                 'required',
                 'email',
-                'unique:users,email,'.$request->user()->id,
+                'unique:users,email,' . $request->user()->id,
             ],
             'current_password' => ['nullable', 'current_password'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
@@ -68,6 +124,29 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Profile updated successfully.',
             'user' => $user,
+        ]);
+    }
+    public function updateAvatar(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'avatar' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+        ]);
+
+        $user = $request->user();
+
+        if ($user->avatar) {
+            Storage::disk('public')->delete($user->avatar);
+        }
+
+        $path = $data['avatar']->store('avatars', 'public');
+
+        $user->avatar = $path;
+        $user->save();
+
+        return response()->json([
+            'message' => 'Profile photo updated successfully.',
+            'user' => $user,
+            'avatar_url' => Storage::disk('public')->url($path),
         ]);
     }
 }
